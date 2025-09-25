@@ -1,0 +1,100 @@
+{
+  "success": true,
+  "error": null,
+  "results": {
+    "detectors": [
+      {
+        "elements": [
+          {
+            "type": "function",
+            "name": "swap",
+            "source_mapping": {
+              "start": 1245,
+              "length": 687,
+              "filename_relative": "VulnerableDEX.sol",
+              "filename_absolute": "/contracts/VulnerableDEX.sol",
+              "filename_short": "VulnerableDEX.sol",
+              "lines": [35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]
+            }
+          }
+        ],
+        "description": "VulnerableDEX.swap(address,address,uint256,uint256) (lines 35-60) sends eth to arbitrary user\n\tDangerous calls:\n\t- IERC20(tokenOut).transfer(msg.sender,amountOut) (line 58)\n",
+        "markdown": "`VulnerableDEX.swap(address,address,uint256,uint256)` (lines 35-60) sends eth to arbitrary user:\n\t- `IERC20(tokenOut).transfer(msg.sender,amountOut)` (line 58)\n",
+        "first_markdown_element": "lines 35-60",
+        "id": "reentrancy-no-eth",
+        "check": "reentrancy-no-eth",
+        "impact": "Medium",
+        "confidence": "Medium"
+      },
+      {
+        "elements": [
+          {
+            "type": "function",
+            "name": "emergencyWithdraw",
+            "source_mapping": {
+              "start": 2456,
+              "length": 156,
+              "filename_relative": "VulnerableDEX.sol",
+              "filename_absolute": "/contracts/VulnerableDEX.sol",
+              "filename_short": "VulnerableDEX.sol",
+              "lines": [91, 92, 93, 94]
+            }
+          }
+        ],
+        "description": "VulnerableDEX.emergencyWithdraw(address,uint256) (lines 91-94) should use access control\n\tThe function allows arbitrary token withdrawal without proper authorization\n",
+        "markdown": "`VulnerableDEX.emergencyWithdraw(address,uint256)` (lines 91-94) should use access control:\n\t- Missing `onlyOwner` modifier\n",
+        "first_markdown_element": "lines 91-94",
+        "id": "missing-access-control",
+        "check": "missing-access-control",
+        "impact": "High",
+        "confidence": "High"
+      },
+      {
+        "elements": [
+          {
+            "type": "function",
+            "name": "updateReserves",
+            "source_mapping": {
+              "start": 3123,
+              "length": 134,
+              "filename_relative": "VulnerableDEX.sol",
+              "filename_absolute": "/contracts/VulnerableDEX.sol",
+              "filename_short": "VulnerableDEX.sol",
+              "lines": [113, 114, 115]
+            }
+          }
+        ],
+        "description": "VulnerableDEX.updateReserves(bytes32,uint256,uint256) (lines 113-115) should be declared internal/private\n\tPublic function that modifies critical state without access control\n",
+        "markdown": "`VulnerableDEX.updateReserves(bytes32,uint256,uint256)` (lines 113-115) should be declared internal/private:\n\t- Function modifies pool reserves without authorization\n",
+        "first_markdown_element": "lines 113-115",
+        "id": "incorrect-modifier",
+        "check": "incorrect-modifier",
+        "impact": "High",
+        "confidence": "High"
+      },
+      {
+        "elements": [
+          {
+            "type": "function",
+            "name": "collectFees",
+            "source_mapping": {
+              "start": 2678,
+              "length": 198,
+              "filename_relative": "VulnerableDEX.sol",
+              "filename_absolute": "/contracts/VulnerableDEX.sol",
+              "filename_short": "VulnerableDEX.sol",
+              "lines": [96, 97, 98, 99]
+            }
+          }
+        ],
+        "description": "VulnerableDEX.collectFees() (lines 96-99) contains arithmetic operations that could overflow\n\tPotential integer overflow in balance calculation\n",
+        "markdown": "`VulnerableDEX.collectFees()` (lines 96-99) contains arithmetic operations that could overflow:\n\t- `balances[owner()] = balances[owner()] + address(this).balance` (line 98)\n",
+        "first_markdown_element": "lines 96-99",
+        "id": "integer-overflow",
+        "check": "integer-overflow",
+        "impact": "Medium",
+        "confidence": "Medium"
+      }
+    ]
+  }
+}
