@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # 🧠 ChainSage - AI Smart Contract Generator
 
 > **Transform natural language into secure Solidity contracts with Google Gemini AI**
