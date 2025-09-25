@@ -1,0 +1,70 @@
+--- a/VulnerableDEX.sol
++++ b/VulnerableDEX.sol
+@@ -1,9 +1,10 @@
+ // SPDX-License-Identifier: MIT
+ pragma solidity ^0.8.19;
+
+ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+ import "@openzeppelin/contracts/access/Ownable.sol";
++import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+
+ /**
+  * @title VulnerableDEX - PATCHED VERSION
+  * @dev A DEX contract with security vulnerabilities fixed by ChainSage
+@@ -11,7 +12,7 @@
+  * - Added reentrancy protection
+  * - Fixed access control issues
+  * - Added slippage protection
+  */
+-contract VulnerableDEX is Ownable {
++contract VulnerableDEX is Ownable, ReentrancyGuard {
+
+     struct LiquidityPool {
+         address tokenA;
+@@ -30,7 +31,7 @@ contract VulnerableDEX is Ownable {
+
+     // FIXED: Added slippage protection
+-    function swap(address tokenIn, address tokenOut, uint256 amountIn, uint256 minAmountOut) external {
++    function swap(address tokenIn, address tokenOut, uint256 amountIn, uint256 minAmountOut) external nonReentrant {
+         bytes32 poolId = getPoolId(tokenIn, tokenOut);
+         LiquidityPool storage pool = pools[poolId];
+
+@@ -50,7 +51,8 @@ contract VulnerableDEX is Ownable {
+             pool.reserveA -= amountOut;
+         }
+
+-        // VULNERABILITY: No slippage check
++        // FIXED: Added slippage protection
++        require(amountOut >= minAmountOut, "Slippage too high");
+
+         // Apply fee
+         uint256 fee = (amountOut * feeRate) / FEE_DENOMINATOR;
+@@ -83,14 +85,16 @@ contract VulnerableDEX is Ownable {
+
+     // FIXED: Added proper access control
+-    function emergencyWithdraw(address token, uint256 amount) external {
+-        // Should be onlyOwner but missing modifier
++    function emergencyWithdraw(address token, uint256 amount) external onlyOwner nonReentrant {
++        require(token != address(0), "Invalid token address");
++        require(amount > 0, "Amount must be greater than 0");
++        require(IERC20(token).balanceOf(address(this)) >= amount, "Insufficient balance");
+         IERC20(token).transfer(msg.sender, amount);
+     }
+
+     // FIXED: Protected against integer overflow
+     function collectFees() external onlyOwner {
+-        // Vulnerable to overflow if balances[owner] is near max uint256
++        uint256 currentBalance = address(this).balance;
++        require(balances[owner()] <= type(uint256).max - currentBalance, "Overflow protection");
+         balances[owner()] = balances[owner()] + currentBalance;
+     }
+
+@@ -111,7 +115,7 @@ contract VulnerableDEX is Ownable {
+
+     // FIXED: Changed from public to internal for security
+-    function updateReserves(bytes32 poolId, uint256 reserveA, uint256 reserveB) public {
++    function updateReserves(bytes32 poolId, uint256 reserveA, uint256 reserveB) internal {
+         pools[poolId].reserveA = reserveA;
+         pools[poolId].reserveB = reserveB;
+     }
+ }
