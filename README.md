@@ -4,12 +4,6 @@ A comprehensive template for getting started with Context Engineering - the disc
 
 > **Context Engineering is 10x better than prompt engineering and 100x better than vibe coding.**
 
-## 🔗 Links & Resources
-
-- **📺 YouTube Channel**: [Income Stream Surfers](https://www.youtube.com/c/incomestreamsurfers) - Learn advanced AI automation techniques
-- **🏫 AI Automation School**: [Skool Community](https://www.skool.com/iss-ai-automation-school-6342/about) - Join our AI automation community
-- **🌐 SEO Grove**: [Live Website](https://seogrove.ai/) - See advanced AI automation in action (built with different methods)
-
 ## 🚀 Quick Start
 
 **For full setup with automatic documentation hooks:** See [SETUP.md](SETUP.md)
